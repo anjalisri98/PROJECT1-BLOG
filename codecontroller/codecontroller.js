@@ -1,0 +1,1 @@
+const {authorSchema,blogSchema}=require('../model/model')
