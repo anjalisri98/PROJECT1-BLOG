@@ -3,7 +3,9 @@ const codecontrol=require('../codecontroller/codecontroller')
 const middleware=require('../middleware/middleware')
 const router = express.Router();
 
-router.post('/createauthor',codecontrol.authordata)
-router.post('/createblog',codecontrol.blogdata)
+router.post('/createAuthor',codecontrol.authorData)
+router.post('/createBlog',codecontrol.blogData)
+router.get ('/getBlog', codecontrol.getBlog)
+
 
 module.exports = router;
