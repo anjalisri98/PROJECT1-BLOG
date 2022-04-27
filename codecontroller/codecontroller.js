@@ -2,9 +2,8 @@ const authorSchema = require("../model/authormodel");
 const blogSchema = require("../model/blogmodel");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
-
 const validator = require("email-validator");
-const blogmodel = require("../model/blogmodel");
+
 
 let authorData = async (req, res) => {
   try {
@@ -13,7 +12,7 @@ let authorData = async (req, res) => {
       let result = await authorSchema.create(data);
       res.status(200).send({ result });
     } else {
-      res.status(404).send({ status: false, data: "Invalid email" });
+      res.status(404).send({ status: false, data: "Invalid email" }); //validator will check for valid email
     }
   } catch (err) {
     res.status(404).send({ data: err.message });
