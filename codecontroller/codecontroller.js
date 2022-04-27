@@ -22,6 +22,13 @@ let authorData = async (req, res) => {
 let blogData = async function (req, res) {
   try {
     let data = req.body;
+    let id = data.authorId
+    if (Object.keys(data).length === 0) {
+      return res.status(400).send("Please Enter data for updation")
+    }
+    const checkauthorId = await blogSchema.findById(id).catch(err=>null)
+
+    if (!checkauthorId) return res.status(404).send({ msg: "Not match" })
     let result = await blogSchema.create(data);
     res.status(200).send({ result });
   } catch (err) {
