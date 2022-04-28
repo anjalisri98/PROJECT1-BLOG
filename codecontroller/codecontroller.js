@@ -18,7 +18,7 @@ let authordata = async (req, res) => {
             res.status(200).send({ result })
         }
         else {
-            res.status(404).send({ status: false, data: "Invalid email" })
+           return  res.status(404).send({ status: false, data: "Invalid email" })
         }
     }
     catch (err) {
