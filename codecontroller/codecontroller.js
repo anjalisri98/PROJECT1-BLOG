@@ -15,7 +15,7 @@ let authordata = async (req, res) => {
         
         if (validator.validate(data.email)) {
             let result = await authorSchema.create(data)
-            res.status(200).send({ result })
+            return res.status(200).send({ result })
         }
         else {
            return  res.status(404).send({ status: false, data: "Invalid email" })
@@ -171,9 +171,6 @@ let delbyquery = async (req, res) => {
         res.status(500).send({ data: err.message })
     }
 }
-
-
-
 
 module.exports.authordata = authordata;
 module.exports.blogdata = blogdata;
