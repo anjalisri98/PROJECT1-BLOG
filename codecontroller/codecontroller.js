@@ -139,7 +139,7 @@ let delblog = async (req, res) => {
       res.status(200).send({ data: "Blog deleted" })
   }
   catch (err) {
-      res.send({ data: err.message })
+      res.status(500).send({ data: err.message })
   }
 }
 let delbyquery = async (req, res) => {
@@ -165,7 +165,7 @@ let delbyquery = async (req, res) => {
         res.status(200).send({ data: result })
     }
     catch (err) {
-        res.send({ data: err.message })
+        res.status(500).send({ data: err.message })
     }
 }
 
