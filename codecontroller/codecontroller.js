@@ -138,7 +138,7 @@ let delblog = async (req, res) => {
       let id = data.blogid
       let del = await blogSchema.findById(id)
       if (del.isDeleted !== false) { return res.status(404).send({ status: false, msg: "Blog missing" }) }
-      await blogSchema.findOneAndUpdate({ _id: id }, { $set: { isDeleted: true } })
+      await blogSchema.findOneAndUpdate({ _id: id }, { $set: { isDeleted: true,DeletedAt:new Date().toLocaleString() } })
       res.status(200).send({ data: "Blog deleted" })
   }
   catch (err) {
@@ -164,7 +164,7 @@ let delbyquery = async (req, res) => {
 
         let del = await blogSchema.find(query)
         if (del.length <= 0) { return res.status(404).send({ status: false, msg: "No such blog present" }) }
-        const result = await blogSchema.updateMany(query, { $set: { isDeleted: true } })
+        const result = await blogSchema.updateMany(query, { $set: { isDeleted: true,DeletedAt:new Date().toLocaleString() } })
         res.status(200).send({ data: result })
     }
     catch (err) {
