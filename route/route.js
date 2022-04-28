@@ -1,11 +1,13 @@
 const express = require('express');
 const codecontrol=require('../codecontroller/codecontroller')
-const middleware=require('../middleware/middleware')
 const router = express.Router();
 
-router.post('/createAuthor',codecontrol.authorData)
-router.post('/createBlog',codecontrol.blogData)
-router.get ('/getBlog', codecontrol.getBlog)
+router.post('/createauthor',codecontrol.authordata)
+router.post('/createblog',codecontrol.blogdata)
+router.get('/getblog',codecontrol.getBlog)
+router.put('/blogupdate/:blogId',codecontrol.blogUpdate)
+router.delete('/deleteblog/:blogid',codecontrol.delblog)
+router.delete('/deletebyquery',codecontrol.delbyquery)
 
 
 module.exports = router;
