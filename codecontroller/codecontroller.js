@@ -35,7 +35,7 @@ const loginauthor = async function (req, res) {
     let userName = req.body.emailId;
     let password = req.body.password;
 
-    let author = await authorSchema.findOne({ emailId: userName, password: password }).catch(err => null)
+    let author = await authorSchema.findOne({ email: userName, password: password }).catch(err => null)
     if (!author)
         return res.status(406).send({
             status: false,
@@ -80,8 +80,6 @@ let getBlog = async function (req, res) {
             }
             if (query.subcategory) {
                 query.subcategory = { $in: query.subcategory.split(",") };
-                console.log(query.subcategory)
-
             }
             filter['$or'] = [
                 { authorId: query.authorId },
