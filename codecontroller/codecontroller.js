@@ -1,8 +1,9 @@
 const authorSchema = require('../model/authormodel')
 const blogSchema = require('../model/blogmodel')
 const validator = require('email-validator')
+const jwt = require('jsonwebtoken')
 
-//===================================================API:FOR CREATING AUTHOR DB===========================================================
+//===================================================[API:FOR CREATING AUTHOR DB]===========================================================
 let authordata = async (req, res) => {
     try {
         let data = req.body
@@ -29,7 +30,7 @@ let authordata = async (req, res) => {
         res.status(500).send({ data: err.message })
     }
 }
-//===================================================TOKEN GENRATOR API=================================================================
+//===================================================[TOKEN GENRATOR API]=================================================================
 const loginauthor = async function (req, res) {
     let userName = req.body.emailId;
     let password = req.body.password;
@@ -43,7 +44,7 @@ const loginauthor = async function (req, res) {
     let token = jwt.sign({ authorId: author._id.toString() }, "functionup-uranium");
     res.send({ status: true, data: token });
 };
-//===================================================API:FOR CREATING BLOG DB===========================================================
+//===================================================[API:FOR CREATING BLOG DB]===========================================================
 let blogdata = async (req, res) => {
     try {
         let data = req.body
@@ -65,11 +66,10 @@ let blogdata = async (req, res) => {
         return res.status(500).send(err.message)
     }
 }
-//=====================================================API:FOR GETTING BLOGS===========================================================
+//=====================================================[API:FOR GETTING BLOGS]===========================================================
 let getBlog = async function (req, res) {
     try {
         let query = req.query;
-
         let filter = {
             isDeleted: false,
             isPublished: true,
@@ -80,6 +80,8 @@ let getBlog = async function (req, res) {
             }
             if (query.subcategory) {
                 query.subcategory = { $in: query.subcategory.split(",") };
+                console.log(query.subcategory)
+
             }
             filter['$or'] = [
                 { authorId: query.authorId },
@@ -100,7 +102,7 @@ let getBlog = async function (req, res) {
         return res.status(500).send({ statuS: false, msg: err.message });
     }
 };
-//=================================================API:FOR UPDATE===============================================================
+//===========================================================[API:FOR UPDATE]===============================================================
 const blogUpdate = async (req, res) => {
     try {
 
@@ -149,11 +151,11 @@ const blogUpdate = async (req, res) => {
         return res.status(500).send(err.message)
     }
 }
-//===========================================================API:FOR DELETING================================================================
+//===========================================================[API:FOR-DELETING]=============================================================
 let delblog = async (req, res) => {
     try {
         let data = req.params
-        let id = data.blogid
+        let id = data.blogId
         let del = await blogSchema.findById(id)
         if (del.isDeleted !== false) { return res.status(404).send({ status: false, msg: "Blog missing" }) }
         await blogSchema.findOneAndUpdate({ _id: id }, { $set: { isDeleted: true, DeletedAt: new Date().toLocaleString() } })
@@ -171,7 +173,7 @@ let delbyquery = async (req, res) => {
         let query = {
             isDeleted: false,
             isPublished: true,
-            authorId: req.authorloged
+            authorId: req.authorverfiy
         }
         if (data.tags) {
             data.tags = { $in: data.tags.split(',') }
@@ -179,10 +181,18 @@ let delbyquery = async (req, res) => {
         if (data.subcategory) {
             data.subcategory = { $in: data.subcategory.split(',') }
         }
-        query['$or'] = [{ authorId: data.authorId }, { category: data.category }, { subcategory: data.subcategory }, { tags: data.tags }]
+        query['$or'] = [
+            { title: data.title },
+            { authorId: data.authorId },
+            { category: data.category },
+            { subcategory: data.subcategory },
+            { tags: data.tags }
+        ]
 
         let del = await blogSchema.find(query)
-        if (del.length <= 0) { return res.status(404).send({ status: false, msg: "No such blog present" }) }
+        if (del.length <= 0) {
+            return res.status(404).send({ status: false, msg: "No such blog present or you are not authorized to del this blog" })
+        }
         const result = await blogSchema.updateMany(query, { $set: { isDeleted: true, DeletedAt: new Date().toLocaleString() } })
         res.status(200).send({ data: result })
     }

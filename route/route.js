@@ -9,7 +9,7 @@ router.post('/createblog',middleware.authentication,codecontrol.blogdata)
 router.get('/getblog',middleware.authentication,codecontrol.getBlog)
 router.put('/blogupdate/:blogId',middleware.autherization,codecontrol.blogUpdate)
 router.delete('/deleteblog/:blogId',middleware.autherization,codecontrol.delblog)
-router.delete('/deletebyquery',middleware.authentication,codecontrol.delbyquery)
+router.delete('/deletebyquery',middleware.autherization,codecontrol.delbyquery)
 
 
 module.exports = router;
