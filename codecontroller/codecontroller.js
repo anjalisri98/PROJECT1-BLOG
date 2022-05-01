@@ -32,7 +32,7 @@ let authordata = async (req, res) => {
 }
 //===================================================[TOKEN GENRATOR API]=================================================================
 const loginauthor = async function (req, res) {
-    let userName = req.body.emailId;
+    let userName = req.body.email;
     let password = req.body.password;
 
     let author = await authorSchema.findOne({ email: userName, password: password }).catch(err => null)
