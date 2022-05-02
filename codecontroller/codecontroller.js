@@ -20,7 +20,7 @@ let authordata = async (req, res) => {
 
         if (validator.validate(data.email)) {
             let result = await authorSchema.create(data)
-            return res.status(200).send({ result })
+            return res.status(201).send({ result })
         }
         else {
             return res.status(404).send({ status: false, data: "Invalid email" })
@@ -38,12 +38,12 @@ const loginauthor = async function (req, res) {
 
     let author = await authorSchema.findOne({ email: userName, password: password }).catch(err => null)
     if (!author)
-        return res.status(406).send({
+        return res.status(400).send({
             status: false,
             msg: "username or the password is not corerct",
         });
     let token = jwt.sign({ authorId: author._id.toString() }, "functionup-uranium");
-    res.send({ status: true, data: token });
+    res.status(200).send({ status: true, data: token });
     }
     catch{
         res.status(500).send({ statuS: false, msg: err.message })
@@ -65,7 +65,7 @@ let blogdata = async (req, res) => {
         let validauthor = await authorSchema.findById(id).catch(err => null)
         if (!validauthor) return res.status(404).send({ status: false, msg: "invalid author id" })
         let result = await blogSchema.create(data)
-        res.status(200).send({ result })
+        res.status(201).send({ result })
     }
     catch (err) {
         return res.status(500).send({ statuS: false, msg: err.message })
