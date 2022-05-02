@@ -57,9 +57,7 @@ let blogdata = async (req, res) => {
         if (!data.title) return res.status(404).send({ status: false, msg: "tittle missing" })
         if (!data.body) return res.status(404).send({ status: false, msg: "body missing" })
         if (!data.authorId) return res.status(404).send({ status: false, msg: "authorId missing" })
-        if (!data.tags) return res.status(404).send({ status: false, msg: "tags missing" })
         if (!data.category) return res.status(404).send({ status: false, msg: "category missing" })
-        if (!data.subcategory) return res.status(404).send({ status: false, msg: "authorId missing" })
 
         let id = data.authorId
         let validauthor = await authorSchema.findById(id).catch(err => null)
