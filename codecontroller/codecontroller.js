@@ -116,7 +116,7 @@ const blogUpdate = async (req, res) => {
         }
         const checkBlogId = await blogSchema.findById(id).catch(err => null)
 
-        if (!checkBlogId) return res.status(404).send({ msg: "Not a blogId" })
+        if (!checkBlogId) return res.status(404).send({ msg: "No blog found with this blogId" })
 
         if (checkBlogId.isDeleted === true) return res.status(400).send({ msg: "Blog is deleted" })
 
