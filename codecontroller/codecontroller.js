@@ -1,7 +1,7 @@
 const authorSchema = require('../model/authormodel')
 const blogSchema = require('../model/blogmodel')
-const validator = require('email-validator')
 const jwt = require('jsonwebtoken')
+const { find } = require('../model/authormodel')
 
 //===================================================[API:FOR CREATING AUTHOR DB]===========================================================
 let authordata = async (req, res) => {
@@ -18,7 +18,7 @@ let authordata = async (req, res) => {
         if (email) return res.status(400).send({ status: false, msg: "email aleready exist" })
         if (!data.password) return res.status(404).send({ status: false, msg: "password missing" })
 
-        if (validator.validate(data.email)) {
+        if (data.email.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
             let result = await authorSchema.create(data)
             return res.status(201).send({ result })
         }
@@ -27,25 +27,25 @@ let authordata = async (req, res) => {
         }
     }
     catch (err) {
-        res.status(500).send({status:false,data: err.message })
+        res.status(500).send({ status: false, data: err.message })
     }
 }
 //===================================================[TOKEN GENRATOR API]=================================================================
 const loginauthor = async function (req, res) {
-    try{
-    let userName = req.body.email;
-    let password = req.body.password;
+    try {
+        let userName = req.body.email;
+        let password = req.body.password;
 
-    let author = await authorSchema.findOne({ email: userName, password: password }).catch(err => null)
-    if (!author)
-        return res.status(400).send({
-            status: false,
-            msg: "username or password is not correct",
-        });
-    let token = jwt.sign({ authorId: author._id.toString() }, "functionup-uranium");
-    res.status(200).send({ status: true, data: token });
+        let author = await authorSchema.findOne({ email: userName, password: password }).catch(err => null)
+        if (!author)
+            return res.status(400).send({
+                status: false,
+                msg: "username or password is not correct",
+            });
+        let token = jwt.sign({ authorId: author._id.toString() }, "functionup-uranium");
+        res.status(200).send({ status: true, data: token });
     }
-    catch{
+    catch {
         res.status(500).send({ statuS: false, msg: err.message })
     }
 };
@@ -121,6 +121,7 @@ const blogUpdate = async (req, res) => {
         if (data.title) checkBlogId.title = data.title;
         if (data.category) checkBlogId.category = data.category;
         if (data.body) checkBlogId.body = data.body;
+        if (data.isPublished) checkBlogId.isPublished = data.isPublished
         //------for tags that is array-----------
         if (data.tags) {
             if (typeof data.tags === "object") {
@@ -144,12 +145,16 @@ const blogUpdate = async (req, res) => {
                 return res.status(400).send({ status: false, msg: "Please send subcategory in array" })
             }
         }
+        if (data.isPublished == false) {
+            let op = await blogSchema.findOneAndUpdate({ _id: id }, { $set: { isPublished: false, publishedAt: " " } }, { new: true })
+            return res.status(200).send({ status: true, msg: op })
+        }
         checkBlogId.isPublished = true
         checkBlogId.publishedAt = new Date().toLocaleString()
         checkBlogId.save()
         return res.status(200).send({ data: checkBlogId })
     } catch (err) {
-        return res.status(500).send({status:false,data:err.message})
+        return res.status(500).send({ status: false, data: err.message })
     }
 }
 //===========================================================[API:FOR-DELETING]=============================================================
@@ -163,7 +168,7 @@ let delblog = async (req, res) => {
         res.status(200).send()//no response was to be send as per question
     }
     catch (err) {
-        res.status(500).send({status:false,data:err.message})
+        res.status(500).send({ status: false, data: err.message })
     }
 }
 let delbyquery = async (req, res) => {
@@ -183,7 +188,7 @@ let delbyquery = async (req, res) => {
         }
         query['$or'] = [
             { title: data.title },
-            {isPublished:data.isPublished},
+            { isPublished: data.isPublished },
             { authorId: data.authorId },
             { category: data.category },
             { subcategory: data.subcategory },
@@ -198,7 +203,7 @@ let delbyquery = async (req, res) => {
         res.status(200).send({ data: result })
     }
     catch (err) {
-        res.status(500).send({status:false,data:err.message})
+        res.status(500).send({ status: false, data: err.message })
     }
 }
 
