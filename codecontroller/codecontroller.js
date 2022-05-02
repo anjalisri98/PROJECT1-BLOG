@@ -162,7 +162,7 @@ let delblog = async (req, res) => {
         let del = await blogSchema.findById(id)
         if (del.isDeleted !== false) { return res.status(404).send({ status: false, msg: "Blog missing" }) }
         await blogSchema.findOneAndUpdate({ _id: id }, { $set: { isDeleted: true, DeletedAt: new Date().toLocaleString() } })
-        res.status(200).send({ data: "Blog deleted" })
+        res.status(200).send()//no response was to be send as per question
     }
     catch (err) {
         res.status(500).send({status:false,data:err.message})
@@ -175,7 +175,6 @@ let delbyquery = async (req, res) => {
         if (Object.keys(data).length <= 0) return res.status(404).send({ status: false, msg: "query missing" })
         let query = {
             isDeleted: false,
-            isPublished: true,
             authorId: req.authorverfiy
         }
         if (data.tags) {
@@ -186,6 +185,7 @@ let delbyquery = async (req, res) => {
         }
         query['$or'] = [
             { title: data.title },
+            {isPublished:data.isPublished},
             { authorId: data.authorId },
             { category: data.category },
             { subcategory: data.subcategory },
