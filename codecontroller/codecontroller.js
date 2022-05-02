@@ -27,11 +27,12 @@ let authordata = async (req, res) => {
         }
     }
     catch (err) {
-        res.status(500).send({ data: err.message })
+        res.status(500).send({status:false,data: err.message })
     }
 }
 //===================================================[TOKEN GENRATOR API]=================================================================
 const loginauthor = async function (req, res) {
+    try{
     let userName = req.body.email;
     let password = req.body.password;
 
@@ -43,6 +44,10 @@ const loginauthor = async function (req, res) {
         });
     let token = jwt.sign({ authorId: author._id.toString() }, "functionup-uranium");
     res.send({ status: true, data: token });
+    }
+    catch{
+        res.status(500).send({ statuS: false, msg: err.message })
+    }
 };
 //===================================================[API:FOR CREATING BLOG DB]===========================================================
 let blogdata = async (req, res) => {
@@ -63,7 +68,7 @@ let blogdata = async (req, res) => {
         res.status(200).send({ result })
     }
     catch (err) {
-        return res.status(500).send(err.message)
+        return res.status(500).send({ statuS: false, msg: err.message })
     }
 }
 //=====================================================[API:FOR GETTING BLOGS]===========================================================
@@ -146,7 +151,7 @@ const blogUpdate = async (req, res) => {
         checkBlogId.save()
         return res.status(200).send({ data: checkBlogId })
     } catch (err) {
-        return res.status(500).send(err.message)
+        return res.status(500).send({status:false,data:err.message})
     }
 }
 //===========================================================[API:FOR-DELETING]=============================================================
@@ -160,7 +165,7 @@ let delblog = async (req, res) => {
         res.status(200).send({ data: "Blog deleted" })
     }
     catch (err) {
-        res.status(500).send({ data: err.message })
+        res.status(500).send({status:false,data:err.message})
     }
 }
 let delbyquery = async (req, res) => {
@@ -195,7 +200,7 @@ let delbyquery = async (req, res) => {
         res.status(200).send({ data: result })
     }
     catch (err) {
-        res.status(500).send({ data: err.message })
+        res.status(500).send({status:false,data:err.message})
     }
 }
 

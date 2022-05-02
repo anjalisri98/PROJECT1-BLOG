@@ -24,6 +24,7 @@ const autherization = async (req, res, next) => {
         }
         let decodedtoken = jwt.verify(token, "functionup-uranium");
         let authorloged = decodedtoken.authorId
+        if (!authorloged) return res.status(401).send({ status: false, msg: "token is invalid" })
         req.authorverfiy = decodedtoken.authorId
         let blogid = req.params.blogId
         if (blogid) {
@@ -34,7 +35,7 @@ const autherization = async (req, res, next) => {
         }
         next();
     }
-    catch (err) { return res.status(500).send({ status: false, msg: "token is invalid" }); }
+    catch (err) { return res.status(500).send({ status: false, msg: err.message }); }
 
 }
 module.exports.authentication = authentication;
