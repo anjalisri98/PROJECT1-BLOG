@@ -148,9 +148,13 @@ const blogUpdate = async (req, res) => {
         if (data.isPublished == false) {
             let op = await blogSchema.findOneAndUpdate({ _id: id }, { $set: { isPublished: false, publishedAt: " " } }, { new: true })
             return res.status(200).send({ status: true, msg: op })
+        } if (data.isPublished == true) {
+            let op = await blogSchema.findOneAndUpdate(
+                { _id: id },
+                { $set: { isPublished: true, publishedAt: new Date().toLocaleString() } },
+                { new: true })
+            return res.status(200).send({ status: true, msg: op })
         }
-        checkBlogId.isPublished = true
-        checkBlogId.publishedAt = new Date().toLocaleString()
         checkBlogId.save()
         return res.status(200).send({ data: checkBlogId })
     } catch (err) {
