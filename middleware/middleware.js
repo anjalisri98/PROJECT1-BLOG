@@ -30,7 +30,7 @@ const autherization = async (req, res, next) => {
         if (blogid) {
             let blogverify = await blogSchema.findOne({ _id: blogid, authorId: authorloged })
             if (!blogverify) {
-                return res.status(401).send({ status: false, data: "Not authorized" })
+                return res.status(403).send({ status: false, data: "Not authorized" })
             }
         }
         next();

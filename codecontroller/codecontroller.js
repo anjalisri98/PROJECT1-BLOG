@@ -1,7 +1,6 @@
 const authorSchema = require('../model/authormodel')
 const blogSchema = require('../model/blogmodel')
 const jwt = require('jsonwebtoken')
-const { find } = require('../model/authormodel')
 
 //===================================================[API:FOR CREATING AUTHOR DB]===========================================================
 let authordata = async (req, res) => {
