@@ -89,7 +89,8 @@ let getBlog = async function (req, res) {
             ];
         }
         let filterByquery = await blogSchema.find(filter)
-        if (filterByquery.length == 0) {
+        console.log(filter.$or)
+        if (filterByquery.length <= 0) {
             return res.status(404).send({ msg: "Blog Not Found" });
         }
         res.status(200).send({ msg: filterByquery });
@@ -217,10 +218,4 @@ let delbyquery = async (req, res) => {
     }
 }
 
-module.exports.authordata = authordata;
-module.exports.blogdata = blogdata;
-module.exports.delblog = delblog;
-module.exports.delbyquery = delbyquery;
-module.exports.blogUpdate = blogUpdate;
-module.exports.getBlog = getBlog;
-module.exports.loginauthor = loginauthor;
+module.exports={authordata,loginauthor,blogdata,getBlog,blogUpdate,delblog,delbyquery}
