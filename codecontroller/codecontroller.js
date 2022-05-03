@@ -150,7 +150,7 @@ const blogUpdate = async (req, res) => {
         } if (data.isPublished == true) {
             let op = await blogSchema.findOneAndUpdate(
                 { _id: id },
-                { $set: { isPublished: true, publishedAt: new Date().toLocaleString() } },
+                { $set: { isPublished: true, publishedAt: new Date().toLocaleString(),DeletedAt:"" } },
                 { new: true })
             return res.status(200).send({ status: true, msg: op })
         }
@@ -167,7 +167,10 @@ let delblog = async (req, res) => {
         let id = data.blogId
         let del = await blogSchema.findById(id)
         if (del.isDeleted !== false) { return res.status(404).send({ status: false, msg: "Blog missing" }) }
-        await blogSchema.findOneAndUpdate({ _id: id }, { $set: { isDeleted: true, DeletedAt: new Date().toLocaleString() } })
+        await blogSchema.findOneAndUpdate(
+            { _id: id }, 
+            { $set: { isDeleted: true, DeletedAt: new Date().toLocaleString(),isPublished: false, publishedAt: " " } 
+        })
         res.status(200).send()//no response was to be send as per question
     }
     catch (err) {
@@ -202,7 +205,8 @@ let delbyquery = async (req, res) => {
         if (del.length <= 0) {
             return res.status(404).send({ status: false, msg: "No such blog present or you are not authorized to del this blog" })
         }
-        const result = await blogSchema.updateMany(query, { $set: { isDeleted: true, DeletedAt: new Date().toLocaleString() } })
+        const result = await blogSchema.updateMany(
+            query, { $set: { isDeleted: true, DeletedAt: new Date().toLocaleString(),isPublished: false, publishedAt: " " } })
         res.status(200).send({ data: result })
     }
     catch (err) {
