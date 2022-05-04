@@ -50,7 +50,7 @@ const blogSchema = new mongoose.Schema({
     },
     publishedAt: {
         type: String,
-        default: " "
+        default:" "
     },
 
 }, { timestamps: true })

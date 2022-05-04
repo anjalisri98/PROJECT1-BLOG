@@ -2,6 +2,7 @@ const authorSchema = require('../model/authormodel')
 const blogSchema = require('../model/blogmodel')
 const jwt = require('jsonwebtoken')
 
+
 //===================================================[API:FOR CREATING AUTHOR DB]===========================================================
 let authordata = async (req, res) => {
     try {
@@ -54,11 +55,22 @@ let blogdata = async (req, res) => {
         if (!data.body) return res.status(404).send({ status: false, msg: "body missing" })
         if (!data.authorId) return res.status(404).send({ status: false, msg: "authorId missing" })
         if (!data.category) return res.status(404).send({ status: false, msg: "category missing" })
+       
+
         let id = data.authorId
         let validauthor = await authorSchema.findById(id).catch(err => null)
         if (!validauthor) return res.status(404).send({ status: false, msg: "invalid author id" })
+        if (req.body.isDeleted === true) {
+            let DeletedAt = new Date()
+            data.DeletedAt=DeletedAt
+          }
+          if (req.body.isPublished === true) {
+            let publishedAt = new Date()
+            data.publishedAt=publishedAt
+          }
         let result = await blogSchema.create(data)
-        res.status(201).send({ result })
+        res.send({status:true , data:result})
+        
     }
     catch (err) {
         return res.status(500).send({ statuS: false, msg: err.message })
@@ -89,7 +101,6 @@ let getBlog = async function (req, res) {
             ];
         }
         let filterByquery = await blogSchema.find(filter)
-        console.log(filter.$or)
         if (filterByquery.length <= 0) {
             return res.status(404).send({ msg: "Blog Not Found" });
         }
